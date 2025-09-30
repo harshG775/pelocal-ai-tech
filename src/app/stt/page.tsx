@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, Copy, Trash2, Languages } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 declare global {
     interface Window {
@@ -44,50 +45,34 @@ export default function SpeechToText() {
                     }
                 }
 
-                if (final) {
-                    setTranscript((prev) => prev + final);
-                }
+                if (final) setTranscript((prev) => prev + final);
                 setInterimTranscript(interim);
             };
 
             recognitionRef.current.onerror = (event: any) => {
                 console.error("Speech recognition error:", event.error);
-                if (event.error === "no-speech") {
-                    console.log({
-                        title: "No speech detected",
-                        description: "Please try speaking again.",
-                        variant: "destructive",
-                    });
-                } else if (event.error === "not-allowed") {
-                    console.log({
-                        title: "Microphone access denied",
-                        description: "Please allow microphone access to use this feature.",
-                        variant: "destructive",
-                    });
+                switch (event.error) {
+                    case "no-speech":
+                        toast.error("No speech detected. Please try speaking again.");
+                        break;
+                    case "not-allowed":
+                        toast.error("Microphone access denied. Please allow access.");
+                        break;
+                    default:
+                        toast.error(`Speech recognition error: ${event.error}`);
                 }
                 setIsListening(false);
             };
 
             recognitionRef.current.onend = () => {
-                console.log("Speech recognition ended");
-                if (isListening) {
-                    recognitionRef.current.start();
-                }
+                if (isListening) recognitionRef.current.start();
             };
         } else {
             setIsSupported(false);
-            console.log({
-                title: "Not supported",
-                description: "Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.",
-                variant: "destructive",
-            });
+            toast.error("Speech recognition is not supported in your browser.");
         }
 
-        return () => {
-            if (recognitionRef.current) {
-                recognitionRef.current.stop();
-            }
-        };
+        return () => recognitionRef.current?.stop();
     }, [language]);
 
     const toggleListening = () => {
@@ -107,20 +92,14 @@ export default function SpeechToText() {
     const handleCopy = async () => {
         if (transcript) {
             await navigator.clipboard.writeText(transcript);
-            console.log({
-                title: "Copied!",
-                description: "Transcript copied to clipboard.",
-            });
+            toast.success("Transcript copied to clipboard!");
         }
     };
 
     const handleClear = () => {
         setTranscript("");
         setInterimTranscript("");
-        console.log({
-            title: "Cleared",
-            description: "Transcript has been cleared.",
-        });
+        toast("Transcript cleared!");
     };
 
     const handleLanguageChange = (value: string) => {
