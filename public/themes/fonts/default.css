@@ -1,0 +1,10 @@
+/* public/themes/fonts/default.css */
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap");
+:root {
+    --font-primary: "Geist", sans-serif;
+    --font-secondary: "Geist", sans-serif;
+    --font-accent: "Geist", sans-serif;
+    --font-display: "Geist", sans-serif;
+    --font-code: "Geist Mono", monospace;
+    --font-quote: "Geist Mono", monospace;
+}
