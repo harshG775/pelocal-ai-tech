@@ -19,8 +19,13 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify(payload),
     });
+    if (!cfResp.ok) {
+        const resp = await cfResp?.json();
+        console.log("error", resp);
+        throw new Error(resp?.errors?.[0]?.message);
+    }
     const audioBuffer = await cfResp.arrayBuffer();
-    
+
     return new NextResponse(audioBuffer, {
         headers: {
             "content-type": "audio/mpeg",
