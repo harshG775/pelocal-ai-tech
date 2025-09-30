@@ -188,10 +188,10 @@ export default function SpeechToText() {
                         size="lg"
                         onClick={toggleListening}
                         disabled={!isSupported}
-                        className={`h-24 w-24 rounded-full transition-all ${
+                        className={`h-24 w-24 rounded-full transition-all sm:[&_svg:not([class*='size-'])]:size-6 ${
                             isListening
                                 ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                                : "bg-accent hover:bg-accent/90 text-accent-foreground"
+                                : "bg-blue-500 hover:bg-blue-500/90 text-blue-50"
                         }`}
                     >
                         {isListening ? <MicOff className="h-10 w-10" /> : <Mic className="h-10 w-10" />}
